@@ -1,21 +1,40 @@
-# shadcn/ui monorepo template
+# Shubhdeep Sarkar's Portfolio
 
-This is a Next.js monorepo template with shadcn/ui.
+![Portfolio header](header-shot.png)
 
-## Adding components
+Personal portfolio site with a minimal grid layout: bio, links (GitHub, Email, Resume), and project highlights. Built with Next.js and Turborepo.
 
-To add components to your app, run the following command at the root of your `web` app:
+## Tech stack
+
+- **Framework:** Next.js 16 (App Router)
+- **UI:** React 19, Tailwind CSS v4
+- **Animation:** Framer Motion
+- **Icons:** Phosphor Icons
+- **Monorepo:** Turborepo, npm workspaces
+- **Language:** TypeScript
+
+## Run locally
 
 ```bash
-pnpm dlx shadcn@latest add button -c apps/web
+npm install
+npm run dev
 ```
 
-This will place the ui components in the `packages/ui/src/components` directory.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Using components
+## Build
 
-To use the components in your app, import them from the `ui` package.
-
-```tsx
-import { Button } from "@workspace/ui/components/button";
+```bash
+npm run build
+npm run start --workspace=web
 ```
+
+## Deployment checklist
+
+- [ ] Choose a host (Vercel, Netlify, etc.)
+- [ ] Connect the GitHub repo to the host
+- [ ] Set build command: `npm run build`
+- [ ] Set output directory: `apps/web` (or root if the host runs `npm run build` from repo root)
+- [ ] Set install command: `npm install` (or default)
+- [ ] Add environment variables if needed
+- [ ] Deploy and verify the live URL
