@@ -13,22 +13,6 @@ Personal portfolio site with a minimal grid layout: bio, links (GitHub, Email, R
 - **Monorepo:** Turborepo, npm workspaces
 - **Language:** TypeScript
 
-## Run locally
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-## Build
-
-```bash
-npm run build
-npm run start --workspace=web
-```
-
 ## Deployment checklist
 
 - [ ] Choose a host (Vercel, Netlify, etc.)
