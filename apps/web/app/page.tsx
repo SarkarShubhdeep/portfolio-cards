@@ -41,20 +41,29 @@ export default function Page() {
     <>
       <BreakpointOverlay />
       <div className="relative h-svh w-full">
-        <main className="grid h-full w-full grid-cols-5 grid-rows-5 gap-0 overflow-hidden bg-[#0a0a0a] font-mono">
-          {/* Row 1: empty */}
+        <main className="grid h-full w-full grid-cols-3 grid-rows-5 gap-0 overflow-hidden bg-[#0a0a0a] font-mono lg:grid-cols-5">
+          {/* Row 1 (lg only): 5 empty cards */}
           {Array.from({ length: 5 }).map((_, i) => (
-            <GridCard key={`r1-${i}`} staggerIndex={staggerIndex++} />
+            <GridCard
+              key={`r1-${i}`}
+              className="max-lg:hidden"
+              staggerIndex={staggerIndex++}
+            />
           ))}
 
-          {/* Row 2: Name | Github | Email | Resume | empty */}
-          <GridCard className="justify-between" staggerIndex={staggerIndex++}>
+          {/* Name+Bio: spans 2 rows below lg, 1 row at lg+ */}
+          <GridCard
+            className="row-span-2 justify-between lg:row-span-1"
+            staggerIndex={staggerIndex++}
+          >
             <span className="font-medium uppercase">Shubhdeep Sarkar</span>
             <p className="text-sm leading-relaxed text-foreground">
               I am a Full Stack Dev. Currently doing my internship at Medical
               Informatics Engineering.{" "}
             </p>
           </GridCard>
+
+          {/* Links: auto-flow fills remaining slots in rows 1-2 (<lg) or row 2 (lg+) */}
           {LINKS.map(({ label, subtext, href }) => (
             <GridCard
               key={label}
@@ -84,8 +93,10 @@ export default function Page() {
           ))}
           <GridCard staggerIndex={staggerIndex++} />
 
-          {/* Row 3: Bio | PROJECT ONE | PROJECT TWO | PROJECT THREE | empty */}
-          <GridCard staggerIndex={staggerIndex++} />
+          {/* Empty before projects (lg only) */}
+          <GridCard className="max-lg:hidden" staggerIndex={staggerIndex++} />
+
+          {/* Projects */}
           {PROJECTS.map(({ title, description }, index) => (
             <GridCard
               key={title}
@@ -103,16 +114,32 @@ export default function Page() {
               </p>
             </GridCard>
           ))}
-          <GridCard staggerIndex={staggerIndex++} />
 
-          {/* Row 4: 5 empty cards */}
-          {Array.from({ length: 5 }).map((_, i) => (
+          {/* Empty after projects (lg only) */}
+          <GridCard className="max-lg:hidden" staggerIndex={staggerIndex++} />
+
+          {/* Row 4: 3 empties (+ 2 lg-only) */}
+          {Array.from({ length: 3 }).map((_, i) => (
             <GridCard key={`r4-${i}`} staggerIndex={staggerIndex++} />
           ))}
+          {Array.from({ length: 2 }).map((_, i) => (
+            <GridCard
+              key={`r4-lg-${i}`}
+              className="max-lg:hidden"
+              staggerIndex={staggerIndex++}
+            />
+          ))}
 
-          {/* Row 5: empty cards — letters rendered by SignatureLetters overlay */}
-          {Array.from({ length: 5 }).map((_, i) => (
-            <GridCard key={`letter-slot-${i}`} staggerIndex={staggerIndex++} />
+          {/* Row 5: 3 empties (+ 2 lg-only) — letters rendered by SignatureLetters overlay */}
+          {Array.from({ length: 3 }).map((_, i) => (
+            <GridCard key={`r5-${i}`} staggerIndex={staggerIndex++} />
+          ))}
+          {Array.from({ length: 2 }).map((_, i) => (
+            <GridCard
+              key={`r5-lg-${i}`}
+              className="max-lg:hidden"
+              staggerIndex={staggerIndex++}
+            />
           ))}
         </main>
         <SignatureLetters />
