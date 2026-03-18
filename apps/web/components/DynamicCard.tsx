@@ -58,6 +58,8 @@ export interface DynamicCardProps {
   cellPosition?: CellPosition
   /** When false, disables the press/release bounce animation (e.g. for placeholder cells). Default true. */
   enablePressEffect?: boolean
+  /** Optional click handler (used by interactive cards like MeCard). */
+  onClick?: React.MouseEventHandler<HTMLDivElement>
 }
 
 function getPositionClasses(
@@ -82,6 +84,7 @@ export function DynamicCard({
   isHalfWidth = false,
   cellPosition,
   enablePressEffect = true,
+  onClick,
 }: DynamicCardProps) {
   const positionClasses = getPositionClasses(
     isHalfWidth,
@@ -103,6 +106,7 @@ export function DynamicCard({
         delay: staggerIndex * STAGGER_DELAY,
         ease: [0.25, 0.46, 0.45, 0.94],
       }}
+      onClick={onClick}
       className={cn(
         "relative flex min-h-0 min-w-0 flex-col overflow-hidden bg-background p-4 transition-colors duration-300 hover:bg-background/50",
         isHalfHeight && "h-1/2",
