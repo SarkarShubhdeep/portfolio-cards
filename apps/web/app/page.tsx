@@ -7,6 +7,7 @@ import { ProjectCard } from "@/components/ProjectCard"
 import { BreakpointOverlay } from "@/components/BreakpointOverlay"
 import { SignatureLetters } from "@/components/SignatureLetters"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { ArrowUpRight } from "@phosphor-icons/react"
 
 export default function Page() {
   const isLg = useMediaQuery("(min-width: 1024px)")
@@ -41,7 +42,7 @@ export default function Page() {
 
   return (
     <>
-      <BreakpointOverlay />
+      {/* <BreakpointOverlay  /> */}
       <div className="relative h-svh w-full">
         <main className="grid h-full w-full grid-cols-1 grid-rows-6 gap-px overflow-hidden bg-muted font-mono sm:grid-cols-2 sm:grid-rows-5 md:grid-cols-3 lg:grid-cols-5">
           {Array.from({ length: cardCount }).map((_, i) =>
@@ -62,9 +63,15 @@ export default function Page() {
                     href="https://github.com/sarkarshubhdeep"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mono text-sm"
+                    className="flex h-full w-full flex-col justify-between"
                   >
-                    GitHub
+                    <div className="flex w-full justify-between">
+                      GitHub
+                      <ArrowUpRight size={20} weight="regular" aria-hidden />
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      sarkarshubhdeep
+                    </span>
                   </a>
                 </LinkCard>
                 <LinkCard
@@ -75,9 +82,15 @@ export default function Page() {
                 >
                   <a
                     href="mailto:sarkarshubhdeep2@email.com"
-                    className="font-mono text-sm"
+                    className="flex h-full w-full flex-col justify-between font-mono"
                   >
-                    Email
+                    <div className="flex w-full justify-between">
+                      Email
+                      <ArrowUpRight size={20} weight="regular" aria-hidden />
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      sarkarshubhdeep2@email.com
+                    </span>
                   </a>
                 </LinkCard>
                 {!isMd && (
@@ -92,9 +105,10 @@ export default function Page() {
                       href="#"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-mono text-sm"
+                      className="flex h-full w-full justify-between font-mono"
                     >
                       Resume
+                      <ArrowUpRight size={20} weight="regular" aria-hidden />
                     </a>
                   </LinkCard>
                 )}
@@ -105,18 +119,30 @@ export default function Page() {
                   href="https://github.com/sarkarshubhdeep"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-mono text-sm"
+                  className="flex h-full w-full flex-col justify-between font-mono"
                 >
-                  GitHub
+                  <div className="flex w-full justify-between">
+                    GitHub
+                    <ArrowUpRight size={20} weight="regular" aria-hidden />
+                  </div>
+                  <span className="text-sm text-muted-foreground">
+                    sarkarshubhdeep
+                  </span>
                 </a>
               </LinkCard>
             ) : i === emailCardPosition ? (
               <LinkCard key={`cell-${i}`} staggerIndex={i}>
                 <a
                   href="mailto:sarkarshubhdeep2@email.com"
-                  className="font-mono text-sm"
+                  className="flex h-full w-full flex-col justify-between font-mono"
                 >
-                  Email
+                  <div className="flex w-full justify-between">
+                    Email
+                    <ArrowUpRight size={20} weight="regular" aria-hidden />
+                  </div>
+                  <span className="text-sm text-muted-foreground">
+                    sarkarshubhdeep2@email.com
+                  </span>
                 </a>
               </LinkCard>
             ) : i === resumeCardPosition ? (
@@ -125,9 +151,10 @@ export default function Page() {
                   href="#"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-mono text-sm"
+                  className="flex h-full w-full justify-between font-mono"
                 >
                   Resume
+                  <ArrowUpRight size={20} weight="regular" aria-hidden />
                 </a>
               </LinkCard>
             ) : i === projectCardPosition ? (
@@ -135,27 +162,31 @@ export default function Page() {
                 key={`cell-${i}`}
                 staggerIndex={i}
                 projectID={0}
-                title="SAMPLE PROJECT"
-                description="This is a sample description of sample project."
+                title="WatchTower"
+                description="Local and privacy-focusd work tracking tool. Inspired by ActivityWatch."
               />
             ) : i === project1CardPosition ? (
               <ProjectCard
                 key={`cell-${i}`}
                 staggerIndex={i}
                 projectID={1}
-                title="SAMPLE PROJECT 1"
-                description="This is a sample description of sample project 1."
+                title="Nudge"
+                description="A simple tool that lives on your status bar and lets you send quick messages to your friends."
               />
             ) : i === project2CardPosition ? (
               <ProjectCard
                 key={`cell-${i}`}
                 staggerIndex={i}
                 projectID={2}
-                title="SAMPLE PROJECT 2"
-                description="This is a sample description of sample project 2."
+                title="Gitflow"
+                description="IDE extension that let's you view your git history and commit messages in graph format."
               />
             ) : (
-              <DynamicCard key={`cell-${i}`} staggerIndex={i}>
+              <DynamicCard
+                key={`cell-${i}`}
+                staggerIndex={i}
+                enablePressEffect={false}
+              >
                 <span
                   className="absolute top-2 left-2 font-mono text-sm text-muted-foreground/70"
                   aria-hidden

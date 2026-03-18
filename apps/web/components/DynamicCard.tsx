@@ -9,6 +9,15 @@ const DURATION = 0.4
 /** Initial x per column (0 = leftmost, 4 = rightmost) for slide-in */
 const INITIAL_X_BY_COLUMN = [-200, -160, -120, -80, -40]
 
+/** Press/release: scale down on press, spring back on release */
+const PRESS_SCALE = 0.96
+const PRESS_TRANSITION = { type: "tween" as const, duration: 0.08 }
+const RELEASE_TRANSITION = {
+  type: "spring" as const,
+  stiffness: 400,
+  damping: 15,
+}
+
 /** In-cell position when card is smaller than the grid cell. Options depend on isHalfWidth / isHalfHeight. */
 export type CellPosition =
   | "left"
@@ -47,6 +56,8 @@ export interface DynamicCardProps {
    * - both: "topLeft" | "topRight" | "bottomLeft" | "bottomRight"
    */
   cellPosition?: CellPosition
+  /** When false, disables the press/release bounce animation (e.g. for placeholder cells). Default true. */
+  enablePressEffect?: boolean
 }
 
 function getPositionClasses(
@@ -70,8 +81,17 @@ export function DynamicCard({
   isHalfHeight = false,
   isHalfWidth = false,
   cellPosition,
+  enablePressEffect = true,
 }: DynamicCardProps) {
-  const positionClasses = getPositionClasses(isHalfWidth, isHalfHeight, cellPosition)
+  const positionClasses = getPositionClasses(
+    isHalfWidth,
+    isHalfHeight,
+    cellPosition
+  )
+
+  const content = (
+    <div className="flex h-full min-h-0 w-full flex-col">{children}</div>
+  )
 
   return (
     <motion.div
@@ -84,14 +104,28 @@ export function DynamicCard({
         ease: [0.25, 0.46, 0.45, 0.94],
       }}
       className={cn(
-        "relative flex min-h-0 min-w-0 flex-col overflow-hidden bg-background p-4",
+        "relative flex min-h-0 min-w-0 flex-col overflow-hidden bg-background p-4 transition-colors duration-300 hover:bg-background/50",
         isHalfHeight && "h-1/2",
         isHalfWidth && "w-1/2",
         positionClasses,
         className
       )}
     >
-      {children}
+      {enablePressEffect ? (
+        <motion.div
+          className="flex h-full min-h-0 w-full origin-center flex-col"
+          animate={{ scale: 1 }}
+          whileTap={{
+            scale: PRESS_SCALE,
+            transition: PRESS_TRANSITION,
+          }}
+          transition={RELEASE_TRANSITION}
+        >
+          {children}
+        </motion.div>
+      ) : (
+        content
+      )}
     </motion.div>
   )
 }

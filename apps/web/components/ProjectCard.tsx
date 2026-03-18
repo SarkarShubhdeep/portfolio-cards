@@ -16,9 +16,9 @@ export function ProjectCard({
 }: ProjectCardProps) {
   return (
     <DynamicCard {...dynamicCardProps}>
-      <div className="flex min-h-0 flex-col gap-1 font-mono">
-        <span className="text-sm font-medium">{title}</span>
-        <span className="text-xs text-muted-foreground">{description}</span>
+      <div className="flex h-full min-h-0 flex-col justify-between gap-2 font-mono">
+        <span className="">{title}</span>
+        <span className="text-sm text-muted-foreground">{description}</span>
       </div>
     </DynamicCard>
   )
