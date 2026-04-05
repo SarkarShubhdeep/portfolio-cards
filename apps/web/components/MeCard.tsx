@@ -6,10 +6,15 @@ import { motion } from "framer-motion"
 
 interface MeCardProps {
   staggerIndex?: number
+  isInverted: boolean
+  onToggle: () => void
 }
 
-export function MeCard({ staggerIndex = 0 }: MeCardProps) {
-  const [isInverted, setIsInverted] = React.useState(false)
+export function MeCard({
+  staggerIndex = 0,
+  isInverted,
+  onToggle,
+}: MeCardProps) {
   const [clickNonce, setClickNonce] = React.useState(0)
 
   const titleRef = React.useRef<HTMLSpanElement | null>(null)
@@ -21,7 +26,7 @@ export function MeCard({ staggerIndex = 0 }: MeCardProps) {
 
   const TITLE_TEXT = "SHUBHDEEP SARKAR"
   const DESCRIPTION_TEXT =
-    "Full Stack Developer. Masters in Computer Science from Purdue University, 2025. Intern at Medical Informatics Engineering. From India. Currently in Fort Wayne, Indiana."
+    "Full Stack Developer. Intern at Medical Informatics Engineering. From India. Currently in Fort Wayne, Indiana."
 
   React.useEffect(() => {
     let mounted = true
@@ -97,18 +102,20 @@ export function MeCard({ staggerIndex = 0 }: MeCardProps) {
       staggerIndex={staggerIndex}
       enablePressEffect={false}
       className={
-        isInverted ? "cursor-pointer bg-foreground hover:bg-foreground" : "cursor-pointer"
+        isInverted
+          ? "cursor-pointer bg-foreground hover:bg-foreground"
+          : "cursor-pointer"
       }
       onClick={() => {
-        setIsInverted((v) => !v)
+        onToggle()
         setClickNonce((v) => v + 1)
       }}
     >
       <motion.div
         key={clickNonce}
-        initial={{ opacity: 0, x: -6, y: 2, skewX: -8 }}
-        animate={{ opacity: 1, x: [0, 3, -2, 0], y: [0, -1, 1, 0], skewX: [0, 6, -4, 0] }}
-        transition={{ duration: 0.45, ease: "easeOut" }}
+        initial={{ opacity: 0, y: 3, scale: 0.99 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.18, ease: "easeOut" }}
         className="flex h-full min-h-0 flex-col justify-between"
       >
         <div
@@ -118,7 +125,14 @@ export function MeCard({ staggerIndex = 0 }: MeCardProps) {
         >
           <span ref={titleRef}>{TITLE_TEXT}</span>
 
-          <span ref={descriptionRef} className="text-sm">
+          <span
+            ref={descriptionRef}
+            className={
+              isInverted
+                ? "text-sm text-background/80"
+                : "text-sm text-muted-foreground"
+            }
+          >
             {DESCRIPTION_TEXT}
           </span>
         </div>

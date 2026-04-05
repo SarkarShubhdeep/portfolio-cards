@@ -17,7 +17,10 @@ export function ProjectCard({
   return (
     <DynamicCard {...dynamicCardProps}>
       <div className="flex h-full min-h-0 flex-col justify-between gap-2 font-mono">
-        <span className="">{title}</span>
+        <div className="flex w-full flex-col">
+          <span className="text-sm text-muted-foreground">PROJECT</span>
+          <span className="">{title}</span>
+        </div>
         <span className="text-sm text-muted-foreground">{description}</span>
       </div>
     </DynamicCard>

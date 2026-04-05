@@ -1,18 +1,64 @@
 "use client"
 
+import * as React from "react"
 import { DynamicCard } from "@/components/DynamicCard"
 import { LinkCard } from "@/components/LinkCard"
 import { MeCard } from "@/components/MeCard"
+import { MeInfoCard } from "@/components/MeInfoCard"
 import { ProjectCard } from "@/components/ProjectCard"
 import { BreakpointOverlay } from "@/components/BreakpointOverlay"
 import { SignatureLetters } from "@/components/SignatureLetters"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { ScrollArea } from "@workspace/ui/components/scroll-area"
 import { ArrowUpRight } from "@phosphor-icons/react"
+
+/** When the real viewport is shorter than this, the page scrolls inside ScrollArea. */
+const MIN_PAGE_HEIGHT_PX = 800
 
 export default function Page() {
   const isLg = useMediaQuery("(min-width: 1024px)")
   const isMd = useMediaQuery("(min-width: 768px)")
   const isSm = useMediaQuery("(min-width: 640px)")
+
+  const [isMeInfoOpen, setIsMeInfoOpen] = React.useState(false)
+
+  const toggleMeInfo = React.useCallback(() => {
+    setIsMeInfoOpen((v) => !v)
+  }, [])
+
+  const meInfoCards = React.useMemo(
+    () => [
+      {
+        title: "Technical skills",
+        bodyText: `React / Next.js
+TypeScript + Node.js
+SQL (Postgres) + Tailwind
+Framer Motion + GSAP`,
+      },
+      {
+        title: "Latest Qualification",
+        bodyText:
+          "Rapid Prototyping and App Designing, Full Stack Web Dev, Machine Learning, Natural Language Processing, Heuristics and Algorithms",
+      },
+    ],
+    []
+  )
+
+  const techCellIndex = React.useMemo(() => {
+    // Technical skills
+    if (isLg) return 1
+    if (isMd) return 6
+    if (isSm) return 5
+    return 2
+  }, [isLg, isMd, isSm])
+
+  const latestQualificationCellIndex = React.useMemo(() => {
+    // Latest Qualification
+    if (isLg) return 2
+    if (isMd) return 7
+    if (isSm) return 6
+    return 3
+  }, [isLg, isMd, isSm])
 
   let cols = 1
   let rows = 6
@@ -40,67 +86,137 @@ export default function Page() {
   const project1CardPosition = isLg ? 12 : isMd ? 4 : 3
   const project2CardPosition = isLg ? 13 : isMd ? 5 : 4
 
+  const pageBlockSize = `max(${MIN_PAGE_HEIGHT_PX}px, 100svh)`
+
   return (
     <>
-      {/* <BreakpointOverlay  /> */}
-      <div className="relative h-svh w-full">
-        <main className="grid h-full w-full grid-cols-1 grid-rows-6 gap-px overflow-hidden bg-muted font-mono sm:grid-cols-2 sm:grid-rows-5 md:grid-cols-3 lg:grid-cols-5">
-          {Array.from({ length: cardCount }).map((_, i) =>
-            i === meCardPosition ? (
-              <MeCard key={`cell-${i}`} staggerIndex={i} />
-            ) : i === 1 && linkCardsCell1 ? (
-              <div
-                key="cell-1-links"
-                className="grid h-full w-full grid-cols-1 grid-rows-1 *:col-start-1 *:row-start-1"
-              >
-                <LinkCard
-                  staggerIndex={1}
-                  isHalfWidth={!isMd}
-                  isHalfHeight
-                  cellPosition={isMd ? "top" : "topLeft"}
-                >
-                  <a
-                    href="https://github.com/sarkarshubhdeep"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-full w-full flex-col justify-between"
+      <BreakpointOverlay />
+      <ScrollArea className="h-svh w-full">
+        <div
+          className="relative w-full"
+          style={{ minHeight: pageBlockSize, height: pageBlockSize }}
+        >
+          <main className="grid h-full w-full grid-cols-1 grid-rows-6 gap-px overflow-hidden bg-muted font-mono sm:grid-cols-2 sm:grid-rows-5 md:grid-cols-3 lg:grid-cols-5">
+            {Array.from({ length: cardCount }).map((_, i) => {
+              const baseCell =
+                i === meCardPosition ? (
+                  <MeCard
+                    key={`cell-${i}`}
+                    staggerIndex={i}
+                    isInverted={isMeInfoOpen}
+                    onToggle={toggleMeInfo}
+                  />
+                ) : i === 1 && linkCardsCell1 ? (
+                  <div
+                    key="cell-1-links"
+                    className="grid h-full w-full grid-cols-1 grid-rows-1 *:col-start-1 *:row-start-1"
                   >
-                    <div className="flex w-full justify-between">
-                      GitHub
-                      <ArrowUpRight size={20} weight="regular" aria-hidden />
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      sarkarshubhdeep
-                    </span>
-                  </a>
-                </LinkCard>
-                <LinkCard
-                  staggerIndex={1}
-                  isHalfHeight
-                  cellPosition="bottom"
-                  className="border-t border-muted"
-                >
-                  <a
-                    href="mailto:sarkarshubhdeep2@email.com"
-                    className="flex h-full w-full flex-col justify-between font-mono"
-                  >
-                    <div className="flex w-full justify-between">
-                      Email
-                      <ArrowUpRight size={20} weight="regular" aria-hidden />
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      sarkarshubhdeep2@email.com
-                    </span>
-                  </a>
-                </LinkCard>
-                {!isMd && (
-                  <LinkCard
-                    staggerIndex={1}
-                    isHalfWidth
-                    isHalfHeight
-                    cellPosition="topRight"
-                    className="border-l border-muted"
-                  >
+                    <LinkCard
+                      staggerIndex={1}
+                      isHalfWidth={!isMd}
+                      isHalfHeight
+                      cellPosition={isMd ? "top" : "topLeft"}
+                    >
+                      <a
+                        href="https://github.com/sarkarshubhdeep"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex h-full w-full flex-col justify-between"
+                      >
+                        <div className="flex w-full justify-between">
+                          GitHub
+                          <ArrowUpRight
+                            size={20}
+                            weight="regular"
+                            aria-hidden
+                          />
+                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          sarkarshubhdeep
+                        </span>
+                      </a>
+                    </LinkCard>
+                    <LinkCard
+                      staggerIndex={1}
+                      isHalfHeight
+                      cellPosition="bottom"
+                      className="border-t border-muted"
+                    >
+                      <a
+                        href="mailto:sarkarshubhdeep2@email.com"
+                        className="flex h-full w-full flex-col justify-between font-mono"
+                      >
+                        <div className="flex w-full justify-between">
+                          Email
+                          <ArrowUpRight
+                            size={20}
+                            weight="regular"
+                            aria-hidden
+                          />
+                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          sarkarshubhdeep2@email.com
+                        </span>
+                      </a>
+                    </LinkCard>
+                    {!isMd && (
+                      <LinkCard
+                        staggerIndex={1}
+                        isHalfWidth
+                        isHalfHeight
+                        cellPosition="topRight"
+                        className="border-l border-muted"
+                      >
+                        <a
+                          href="#"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex h-full w-full justify-between font-mono"
+                        >
+                          Resume
+                          <ArrowUpRight
+                            size={20}
+                            weight="regular"
+                            aria-hidden
+                          />
+                        </a>
+                      </LinkCard>
+                    )}
+                  </div>
+                ) : i === githubCardPosition ? (
+                  <LinkCard key={`cell-${i}`} staggerIndex={i}>
+                    <a
+                      href="https://github.com/sarkarshubhdeep"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-full w-full flex-col justify-between font-mono"
+                    >
+                      <div className="flex w-full justify-between">
+                        GitHub
+                        <ArrowUpRight size={20} weight="regular" aria-hidden />
+                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        sarkarshubhdeep
+                      </span>
+                    </a>
+                  </LinkCard>
+                ) : i === emailCardPosition ? (
+                  <LinkCard key={`cell-${i}`} staggerIndex={i}>
+                    <a
+                      href="mailto:sarkarshubhdeep2@email.com"
+                      className="flex h-full w-full flex-col justify-between font-mono"
+                    >
+                      <div className="flex w-full justify-between">
+                        Email
+                        <ArrowUpRight size={20} weight="regular" aria-hidden />
+                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        sarkarshubhdeep2@email.com
+                      </span>
+                    </a>
+                  </LinkCard>
+                ) : i === resumeCardPosition ? (
+                  <LinkCard key={`cell-${i}`} staggerIndex={i}>
                     <a
                       href="#"
                       target="_blank"
@@ -111,94 +227,74 @@ export default function Page() {
                       <ArrowUpRight size={20} weight="regular" aria-hidden />
                     </a>
                   </LinkCard>
-                )}
-              </div>
-            ) : i === githubCardPosition ? (
-              <LinkCard key={`cell-${i}`} staggerIndex={i}>
-                <a
-                  href="https://github.com/sarkarshubhdeep"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-full w-full flex-col justify-between font-mono"
-                >
-                  <div className="flex w-full justify-between">
-                    GitHub
-                    <ArrowUpRight size={20} weight="regular" aria-hidden />
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    sarkarshubhdeep
-                  </span>
-                </a>
-              </LinkCard>
-            ) : i === emailCardPosition ? (
-              <LinkCard key={`cell-${i}`} staggerIndex={i}>
-                <a
-                  href="mailto:sarkarshubhdeep2@email.com"
-                  className="flex h-full w-full flex-col justify-between font-mono"
-                >
-                  <div className="flex w-full justify-between">
-                    Email
-                    <ArrowUpRight size={20} weight="regular" aria-hidden />
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    sarkarshubhdeep2@email.com
-                  </span>
-                </a>
-              </LinkCard>
-            ) : i === resumeCardPosition ? (
-              <LinkCard key={`cell-${i}`} staggerIndex={i}>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-full w-full justify-between font-mono"
-                >
-                  Resume
-                  <ArrowUpRight size={20} weight="regular" aria-hidden />
-                </a>
-              </LinkCard>
-            ) : i === projectCardPosition ? (
-              <ProjectCard
-                key={`cell-${i}`}
-                staggerIndex={i}
-                projectID={0}
-                title="WatchTower"
-                description="Local and privacy-focusd work tracking tool. Inspired by ActivityWatch."
-              />
-            ) : i === project1CardPosition ? (
-              <ProjectCard
-                key={`cell-${i}`}
-                staggerIndex={i}
-                projectID={1}
-                title="Nudge"
-                description="A simple tool that lives on your status bar and lets you send quick messages to your friends."
-              />
-            ) : i === project2CardPosition ? (
-              <ProjectCard
-                key={`cell-${i}`}
-                staggerIndex={i}
-                projectID={2}
-                title="Gitflow"
-                description="IDE extension that let's you view your git history and commit messages in graph format."
-              />
-            ) : (
-              <DynamicCard
-                key={`cell-${i}`}
-                staggerIndex={i}
-                enablePressEffect={false}
-              >
-                <span
-                  className="absolute top-2 left-2 font-mono text-sm text-muted-foreground/70"
-                  aria-hidden
-                >
-                  {i}
-                </span>
-              </DynamicCard>
-            )
-          )}
-        </main>
-        <SignatureLetters />
-      </div>
+                ) : i === projectCardPosition ? (
+                  <ProjectCard
+                    key={`cell-${i}`}
+                    staggerIndex={i}
+                    projectID={0}
+                    title="WatchTower"
+                    description="Local and privacy-focusd work tracking tool. Inspired by ActivityWatch."
+                  />
+                ) : i === project1CardPosition ? (
+                  <ProjectCard
+                    key={`cell-${i}`}
+                    staggerIndex={i}
+                    projectID={1}
+                    title="Nudge"
+                    description="A simple tool that lives on your status bar and lets you send quick messages to your friends."
+                  />
+                ) : i === project2CardPosition ? (
+                  <ProjectCard
+                    key={`cell-${i}`}
+                    staggerIndex={i}
+                    projectID={2}
+                    title="Gitflow"
+                    description="IDE extension that let's you view your git history and commit messages in graph format."
+                  />
+                ) : (
+                  <DynamicCard
+                    key={`cell-${i}`}
+                    staggerIndex={i}
+                    enablePressEffect={false}
+                  >
+                    <span
+                      className="absolute top-2 left-2 font-mono text-sm text-muted-foreground/70"
+                      aria-hidden
+                    >
+                      {i}
+                    </span>
+                  </DynamicCard>
+                )
+
+              const overlayCardIndex =
+                i === techCellIndex
+                  ? 0
+                  : i === latestQualificationCellIndex
+                    ? 1
+                    : -1
+              const shouldOverlay = isMeInfoOpen && overlayCardIndex !== -1
+
+              const card = meInfoCards[overlayCardIndex]
+
+              return (
+                <div key={`cell-${i}`} className="relative h-full w-full">
+                  {baseCell}
+                  {shouldOverlay && card && (
+                    <div className="pointer-events-none absolute inset-0">
+                      <MeInfoCard
+                        staggerIndex={i}
+                        title={card.title}
+                        bodyText={card.bodyText}
+                      />
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </main>
+          <SignatureLetters />
+        </div>
+      </ScrollArea>
     </>
   )
 }
