@@ -90,7 +90,7 @@ Framer Motion + GSAP`,
 
   return (
     <>
-      <BreakpointOverlay />
+      {/* <BreakpointOverlay /> */}
       <ScrollArea className="h-svh w-full">
         <div
           className="relative w-full"
