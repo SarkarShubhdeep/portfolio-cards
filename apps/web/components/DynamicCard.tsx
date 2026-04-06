@@ -9,6 +9,15 @@ const DURATION = 0.4
 /** Initial x per column (0 = leftmost, 4 = rightmost) for slide-in */
 const INITIAL_X_BY_COLUMN = [-200, -160, -120, -80, -40]
 
+/** Press/release: scale down on press, spring back on release */
+const PRESS_SCALE = 0.96
+const PRESS_TRANSITION = { type: "tween" as const, duration: 0.08 }
+const RELEASE_TRANSITION = {
+  type: "spring" as const,
+  stiffness: 400,
+  damping: 15,
+}
+
 /** In-cell position when card is smaller than the grid cell. Options depend on isHalfWidth / isHalfHeight. */
 export type CellPosition =
   | "left"
@@ -36,6 +45,8 @@ export interface DynamicCardProps {
   className?: string
   /** Order index for entry animation (left→right, top→down). 0 = first card. */
   staggerIndex?: number
+  /** When false, disables the initial slide-in/opacity entry animation. Default true. */
+  enableEntryAnimation?: boolean
   /** When true, card height is half of the grid cell. */
   isHalfHeight?: boolean
   /** When true, card width is half of the grid cell. */
@@ -47,6 +58,10 @@ export interface DynamicCardProps {
    * - both: "topLeft" | "topRight" | "bottomLeft" | "bottomRight"
    */
   cellPosition?: CellPosition
+  /** When false, disables the press/release bounce animation (e.g. for placeholder cells). Default true. */
+  enablePressEffect?: boolean
+  /** Optional click handler (used by interactive cards like MeCard). */
+  onClick?: React.MouseEventHandler<HTMLDivElement>
 }
 
 function getPositionClasses(
@@ -67,11 +82,54 @@ export function DynamicCard({
   children,
   className,
   staggerIndex = 0,
+  enableEntryAnimation = true,
   isHalfHeight = false,
   isHalfWidth = false,
   cellPosition,
+  enablePressEffect = true,
+  onClick,
 }: DynamicCardProps) {
-  const positionClasses = getPositionClasses(isHalfWidth, isHalfHeight, cellPosition)
+  const positionClasses = getPositionClasses(
+    isHalfWidth,
+    isHalfHeight,
+    cellPosition
+  )
+
+  const content = (
+    <div className="flex h-full min-h-0 w-full flex-col">{children}</div>
+  )
+
+  if (!enableEntryAnimation) {
+    return (
+      <div
+        style={{ zIndex: staggerIndex }}
+        onClick={onClick}
+        className={cn(
+          "relative flex h-full w-full min-h-0 min-w-0 flex-col overflow-hidden bg-background p-4 transition-colors duration-300 hover:bg-background/50",
+          isHalfHeight && "h-1/2",
+          isHalfWidth && "w-1/2",
+          positionClasses,
+          className
+        )}
+      >
+        {enablePressEffect ? (
+          <motion.div
+            className="flex h-full min-h-0 w-full origin-center flex-col"
+            animate={{ scale: 1 }}
+            whileTap={{
+              scale: PRESS_SCALE,
+              transition: PRESS_TRANSITION,
+            }}
+            transition={RELEASE_TRANSITION}
+          >
+            {children}
+          </motion.div>
+        ) : (
+          content
+        )}
+      </div>
+    )
+  }
 
   return (
     <motion.div
@@ -83,15 +141,30 @@ export function DynamicCard({
         delay: staggerIndex * STAGGER_DELAY,
         ease: [0.25, 0.46, 0.45, 0.94],
       }}
+      onClick={onClick}
       className={cn(
-        "relative flex min-h-0 min-w-0 flex-col overflow-hidden bg-background p-4",
+        "relative flex h-full w-full min-h-0 min-w-0 flex-col overflow-hidden bg-background p-4 transition-colors duration-300 hover:bg-background/50",
         isHalfHeight && "h-1/2",
         isHalfWidth && "w-1/2",
         positionClasses,
         className
       )}
     >
-      {children}
+      {enablePressEffect ? (
+        <motion.div
+          className="flex h-full min-h-0 w-full origin-center flex-col"
+          animate={{ scale: 1 }}
+          whileTap={{
+            scale: PRESS_SCALE,
+            transition: PRESS_TRANSITION,
+          }}
+          transition={RELEASE_TRANSITION}
+        >
+          {children}
+        </motion.div>
+      ) : (
+        content
+      )}
     </motion.div>
   )
 }

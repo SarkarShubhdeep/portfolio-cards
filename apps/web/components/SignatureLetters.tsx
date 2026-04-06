@@ -5,20 +5,22 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 
 /**
  * Signature letters over the bottom row.
- * CASE 1 (xl+): inner width 100% so letters spread across the full row.
- * CASE 2 (< xl): inner width 20% so letters sit together with 12px gap.
+ * CASE 1 (lg+): inner width 100% so letters spread across the full row.
+ * CASE 2 (< lg): inner width 20% so letters sit together with 12px gap.
  * Width is animated so the transition is smooth.
  */
 
 const LETTERS = ["s", "h", "u", "b", "h"] as const
+/** Fixed letter size (matches former clamp max); no vw so size does not shrink with viewport. */
+const LETTER_FONT_SIZE_REM = 8
 const INSET = 12
 const GAP = 12
-const XL_BREAKPOINT = 1280
+const LG_BREAKPOINT = 1024
 
 const transition = { type: "spring" as const, stiffness: 260, damping: 28 }
 
 export function SignatureLetters() {
-  const isXl = useMediaQuery(`(min-width: ${XL_BREAKPOINT}px)`)
+  const isLg = useMediaQuery(`(min-width: ${LG_BREAKPOINT}px)`)
 
   return (
     <div
@@ -32,8 +34,8 @@ export function SignatureLetters() {
         <motion.div
           layout
           animate={{
-            width: isXl ? "100%" : "20%",
-            gap: isXl ? 0 : GAP,
+            width: isLg ? "100%" : "20%",
+            gap: isLg ? 0 : GAP,
           }}
           transition={transition}
           className="flex items-end overflow-visible"
@@ -47,9 +49,10 @@ export function SignatureLetters() {
               key={`${letter}-${i}`}
               layout
               transition={transition}
-              className="inline-block shrink-0 text-[clamp(3rem,12vw,8rem)] leading-[0.85] font-bold tracking-tight text-foreground"
+              className="inline-block shrink-0 leading-[0.85] font-bold tracking-tight text-foreground"
               style={{
-                flex: isXl ? "0 0 20%" : "0 0 auto",
+                fontSize: `${LETTER_FONT_SIZE_REM}rem`,
+                flex: isLg ? "0 0 20%" : "0 0 auto",
               }}
               aria-hidden
             >
